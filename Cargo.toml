@@ -1,0 +1,26 @@
+[package]
+name = "llm-fallback-chain"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+description = "Multi-provider failover for LLM calls. Try provider A, fall back to B then C on failure."
+keywords = ["llm", "fallback", "failover", "ai", "agents"]
+categories = ["asynchronous", "rust-patterns"]
+repository = "https://github.com/MukundaKatta/llm-fallback-chain-rs"
+readme = "README.md"
+
+[features]
+default = []
+# The async variant is runtime-agnostic at the library level (uses
+# `futures::future::BoxFuture`). Feature is named `tokio` because tokio is the
+# most common driver in the LLM ecosystem.
+tokio = ["dep:futures"]
+serde = ["dep:serde"]
+
+[dependencies]
+futures = { version = "0.3", optional = true }
+serde = { version = "1", features = ["derive"], optional = true }
+
+[dev-dependencies]
+tokio = { version = "1", features = ["rt", "rt-multi-thread", "macros", "time"] }
+serde_json = "1"

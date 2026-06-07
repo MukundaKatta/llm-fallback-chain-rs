@@ -1,8 +1,6 @@
 #![cfg(feature = "tokio")]
 
-use llm_fallback_chain::{
-    async_provider, AllProvidersFailed, AsyncFallbackChain, DynError,
-};
+use llm_fallback_chain::{async_provider, AllProvidersFailed, AsyncFallbackChain, DynError};
 use std::sync::Arc;
 use std::sync::Mutex;
 

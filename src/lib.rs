@@ -138,6 +138,7 @@ impl<I, O> FallbackChain<I, O> {
 
     /// Set the predicate that decides whether a given error should cause
     /// fallback. Default falls back on any error.
+    #[must_use]
     pub fn with_should_fall_back<F>(mut self, f: F) -> Self
     where
         F: Fn(&DynError) -> bool + Send + Sync + 'static,
@@ -148,6 +149,7 @@ impl<I, O> FallbackChain<I, O> {
 
     /// Set the audit callback fired after each fallback. Called with
     /// `(failed_name, error, next_name)` before the next provider is tried.
+    #[must_use]
     pub fn with_on_fallback<F>(mut self, f: F) -> Self
     where
         F: Fn(&str, &DynError, &str) + Send + Sync + 'static,
@@ -171,6 +173,7 @@ impl<I, O> FallbackChain<I, O> {
     }
 
     /// Provider names in order.
+    #[must_use]
     pub fn names(&self) -> Vec<&str> {
         self.providers.iter().map(|(n, _)| n.as_str()).collect()
     }
@@ -268,6 +271,7 @@ mod async_chain {
             })
         }
 
+        #[must_use]
         pub fn with_should_fall_back<F>(mut self, f: F) -> Self
         where
             F: Fn(&DynError) -> bool + Send + Sync + 'static,
@@ -276,6 +280,7 @@ mod async_chain {
             self
         }
 
+        #[must_use]
         pub fn with_on_fallback<F>(mut self, f: F) -> Self
         where
             F: Fn(&str, &DynError, &str) + Send + Sync + 'static,
@@ -295,6 +300,7 @@ mod async_chain {
             Ok(self)
         }
 
+        #[must_use]
         pub fn names(&self) -> Vec<&str> {
             self.providers.iter().map(|(n, _)| n.as_str()).collect()
         }

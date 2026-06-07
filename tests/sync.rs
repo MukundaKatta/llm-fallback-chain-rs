@@ -156,12 +156,19 @@ fn all_providers_fail_raises_aggregate() {
     ])
     .unwrap();
     let err = chain.call(&()).unwrap_err();
-    let agg = err.downcast::<AllProvidersFailed>().expect("AllProvidersFailed");
+    let agg = err
+        .downcast::<AllProvidersFailed>()
+        .expect("AllProvidersFailed");
     assert_eq!(agg.attempts.len(), 2);
     assert_eq!(agg.attempts[0].name, "a");
     assert_eq!(agg.attempts[1].name, "b");
     for a in &agg.attempts {
-        assert!(a.error.as_ref().unwrap().to_string().contains("rate limited"));
+        assert!(a
+            .error
+            .as_ref()
+            .unwrap()
+            .to_string()
+            .contains("rate limited"));
     }
 }
 
@@ -220,21 +227,21 @@ fn on_fallback_callback_fires_for_each_fallback() {
     let chain = FallbackChain::<(), &'static str>::new(vec![
         (
             "a",
-            Box::new(|_: &()| -> Result<&'static str, DynError> {
-                Err(Box::new(RateLimited("a")))
-            }) as _,
+            Box::new(|_: &()| -> Result<&'static str, DynError> { Err(Box::new(RateLimited("a"))) })
+                as _,
         ),
         (
             "b",
-            Box::new(|_: &()| -> Result<&'static str, DynError> {
-                Err(Box::new(RateLimited("b")))
-            }) as _,
+            Box::new(|_: &()| -> Result<&'static str, DynError> { Err(Box::new(RateLimited("b"))) })
+                as _,
         ),
         ("c", Box::new(|_: &()| Ok("ok")) as _),
     ])
     .unwrap()
     .with_on_fallback(move |failed, _exc, next| {
-        cc.lock().unwrap().push((failed.to_string(), next.to_string()));
+        cc.lock()
+            .unwrap()
+            .push((failed.to_string(), next.to_string()));
     });
     let result = chain.call(&()).unwrap();
     assert_eq!(result.provider, "c");
@@ -277,9 +284,7 @@ fn on_fallback_not_called_after_last_provider() {
         ),
     ])
     .unwrap()
-    .with_on_fallback(move |f, _e, nxt| {
-        cc.lock().unwrap().push((f.to_string(), nxt.to_string()))
-    });
+    .with_on_fallback(move |f, _e, nxt| cc.lock().unwrap().push((f.to_string(), nxt.to_string())));
     let err = chain.call(&()).unwrap_err();
     assert!(err.downcast_ref::<AllProvidersFailed>().is_some());
     let got = calls.lock().unwrap().clone();
